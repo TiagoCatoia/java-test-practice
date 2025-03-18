@@ -1,6 +1,7 @@
-package org.example;
+package org.example.Identifier;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,10 +12,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.Identifier.isValidIdentifier;
+import static org.example.Identifier.Identifier.isValidIdentifier;
 
 class IdentifierTest {
 
+    @Tag("UnitTest")
     @ParameterizedTest
     @MethodSource("provideValidIdentifiers")
     @DisplayName("Should return true if identifier has between 1 and 6 characters and starts with a letter")
@@ -42,6 +44,7 @@ class IdentifierTest {
         );
     }
 
+    @Tag("UnitTest")
     @ParameterizedTest
     @MethodSource("provideInvalidIdentifiersStartingWithNumber")
     @DisplayName("Should return false if identifier starts with a number")
@@ -66,6 +69,7 @@ class IdentifierTest {
         );
     }
 
+    @Tag("UnitTest")
     @ParameterizedTest
     @MethodSource("provideInvalidIdentifiersContainingSpecialChars")
     @DisplayName("Should return false if identifier contains any character that is not a letter or number")
@@ -97,6 +101,7 @@ class IdentifierTest {
         );
     }
 
+    @Tag("UnitTest")
     @ParameterizedTest
     @ValueSource(strings = {
             "abcdefg",
@@ -111,6 +116,7 @@ class IdentifierTest {
         assertThat(isValidIdentifier(identifier)).as("identifier '%s' should be invalid (false)", identifier).isFalse();
     }
 
+    @Tag("UnitTest")
     @Test
     @DisplayName("Should return false if identifier is null")
     void shouldReturnFalseIfIdentifierIsNull() {

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Identifier;
 
 public class Identifier {
     public static boolean isValidIdentifier(String identifier) {
