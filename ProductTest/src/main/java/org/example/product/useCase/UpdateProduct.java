@@ -11,29 +11,43 @@ public class UpdateProduct {
     private final ProductRepository repository;
 
     public UpdateProduct(ProductRepository repository) {
-        this.repository = repository;
+        this.repository = Objects.requireNonNull(repository, "Repository cannot be null.");
     }
 
     public boolean updateProduct(Product product) {
-        Product prod = Objects.requireNonNull(product);
+        validateProduct(product);
 
-        if (prod.getId() == null || prod.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("Product ID cannot be null or empty.");
+        Optional<Product> existingProduct = repository.getProduct(product.getId());
+        if (existingProduct.isEmpty()) {
+            throw new NoSuchElementException("Product not found. ID: " + product.getId());
         }
 
-        if (repository.getProduct(prod.getId()).isEmpty())
-            throw new NoSuchElementException("Product not exists. id: " + prod.getId());
+        return repository.update(product).isPresent();
+    }
 
-        if (prod.getName() == null || prod.getName().trim().isEmpty()) {
+    private void validateProduct(Product product) {
+        Objects.requireNonNull(product, "Product cannot be null.");
+
+        if (product.getId() == null) {
+            throw new IllegalArgumentException("Product ID cannot be null.");
+        }
+
+        if (isNullOrEmpty(product.getName())) {
             throw new IllegalArgumentException("Product name cannot be null or empty.");
         }
 
-        if (prod.getQuantity() < 0 || prod.getPrice() <= 0) {
-            throw new IllegalArgumentException("Quantity and Price cannot be negative and price cannot be 0. quantity: "
-                    + prod.getQuantity()
-                    + " price: " + prod.getPrice());
+        if (product.getQuantity() < 0) {
+            throw new IllegalArgumentException("Product quantity cannot be negative. Given: " + product.getQuantity());
         }
-        Optional<Product> prodUpdated = repository.update(prod);
-        return prodUpdated.isPresent();
+
+        if (product.getPrice() <= 0) {
+            throw new IllegalArgumentException(
+                    String.format("Product price must be greater than 0. Given: %.2f", product.getPrice())
+            );
+        }
+    }
+
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 }

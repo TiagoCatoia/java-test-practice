@@ -1,14 +1,15 @@
 package org.example.product;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Product {
-    private final String id;
+    private final UUID id;
     private final String name;
     private final double price;
     private final int quantity;
 
-    public Product(String id, String name, double price, int quantity) {
+    public Product(UUID id, String name, double price, int quantity) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -38,7 +39,7 @@ public class Product {
         return Objects.hashCode(id);
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
