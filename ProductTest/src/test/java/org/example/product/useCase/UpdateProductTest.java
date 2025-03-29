@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,5 +100,20 @@ class UpdateProductTest {
         assertThatThrownBy(() -> sut.updateProduct(nonexistentProduct))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("Product not found. ID: " + uuid);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideValidProductsChanges")
+    @DisplayName("Should return false when the product failed to update")
+    void shouldReturnFalseWhenTheProductFailedToUpdate(Product updatedProduct, UUID expectedId) {
+        Product existingProduct = new Product(expectedId, "Old Product", 5, 50);
+
+        when(productRepositoryMock.getProduct(expectedId))
+                .thenReturn(Optional.of(existingProduct));
+
+        when(productRepositoryMock.update(updatedProduct))
+                .thenReturn(Optional.empty());
+
+        assertThat(sut.updateProduct(updatedProduct)).isFalse();
     }
 }
